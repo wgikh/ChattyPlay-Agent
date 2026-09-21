@@ -18,21 +18,31 @@ const WORDS = [
 ]
 
 // 浮动文字样式
-const FloatingText = styled.b<{ x: number; y: number; color: string; opacity: number; scale: number }>`
+const FloatingText = styled.b<{ x: number; y: number; color: string }>`
   position: fixed;
   left: ${props => props.x}px;
   top: ${props => props.y}px;
   font-size: 16px;
   cursor: default;
   color: ${props => props.color};
-  opacity: ${props => props.opacity};
-  transform: scale(${props => props.scale});
+  transform: translate3d(0, 0, 0) scale(1.2);
   pointer-events: none;
   user-select: none;
-  transition: none;
+  animation: click-word 1s ease-out forwards;
   z-index: 9999;
   font-weight: 500;
   text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+
+  @keyframes click-word {
+    to {
+      opacity: 0;
+      transform: translate3d(0, -62px, 0) scale(1.32);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    display: none;
+  }
 `
 
 interface WordInstance {
@@ -41,8 +51,6 @@ interface WordInstance {
   x: number
   y: number
   color: string
-  opacity: number
-  scale: number
 }
 
 // 生成随机颜色
@@ -56,10 +64,12 @@ const randomColor = (): string => {
 const ClickEffect: React.FC = () => {
   const [words, setWords] = React.useState<WordInstance[]>([])
   const wordIndexRef = React.useRef(0)
-  const animationFrameRef = React.useRef<number>()
 
   // 处理点击事件
   const handleClick = useCallback((event: MouseEvent) => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (event.target instanceof Element && event.target.closest('a, button, input, textarea, select, summary, label')) return
+
     const fontSize = 16
     const x = event.clientX - fontSize / 2
     const y = event.clientY - fontSize
@@ -69,44 +79,13 @@ const ClickEffect: React.FC = () => {
       text: WORDS[wordIndexRef.current],
       x,
       y,
-      color: randomColor(),
-      opacity: 1,
-      scale: 1.2
+      color: randomColor()
     }
 
     // 更新词语索引
     wordIndexRef.current = (wordIndexRef.current + 1) % WORDS.length
 
     setWords(prev => [...prev, newWord])
-  }, [])
-
-  // 动画更新循环
-  useEffect(() => {
-    const updateWords = () => {
-      setWords(prev => {
-        const updated = prev.map(word => ({
-          ...word,
-          y: word.y - 1, // 向上移动
-          opacity: word.opacity - 0.016, // 逐渐消失
-          scale: word.scale + 0.002 // 逐渐放大
-        }))
-
-        // 移除已经完全透明的词语
-        const visible = updated.filter(word => word.opacity > 0)
-
-        return visible
-      })
-
-      animationFrameRef.current = requestAnimationFrame(updateWords)
-    }
-
-    animationFrameRef.current = requestAnimationFrame(updateWords)
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current)
-      }
-    }
   }, [])
 
   // 添加全局点击事件监听
@@ -126,8 +105,7 @@ const ClickEffect: React.FC = () => {
           x={word.x}
           y={word.y}
           color={word.color}
-          opacity={word.opacity}
-          scale={word.scale}
+          onAnimationEnd={() => setWords(current => current.filter(item => item.id !== word.id))}
         >
           {word.text}
         </FloatingText>

@@ -19,6 +19,7 @@ import help from './zh/help'
 import goofish from './zh/goofish'
 import aimarkmap from './zh/aimarkmap'
 import latex from './zh/latex'
+import news from './zh/news'
 
 export default {
   translation: {
@@ -42,6 +43,7 @@ export default {
     help,
     goofish,
     aimarkmap,
-    latex
+    latex,
+    news
   }
 }

@@ -42,6 +42,7 @@ import WorkerAgent from './pages/WorkerAgent'
 import Markmap from './pages/Markmap'
 import Latex from './pages/Latex'
 import Markdown from './pages/Markdown'
+import News from './pages/News'
 
 // 公开路由
 const publicRoutes = ['/']
@@ -211,6 +212,7 @@ const AppContent: React.FC = () => {
           <Route path="/trans" element={<Trans />} />
           <Route path="/text-to-photo" element={<TextToPhoto />} />
           <Route path="/help" element={<Help />} />
+          <Route path="/news" element={<News />} />
           <Route path="/about" element={<About />} />
           <Route path="/papers" element={<PaperListPage />} />
           <Route path="/markmap" element={<Markmap />} />

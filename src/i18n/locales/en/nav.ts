@@ -9,6 +9,7 @@ const nav = {
   textToPhoto: 'Text to Photo',
   gold: 'Gold',
   aimarkmap: 'Map',
+  news: 'News',
   about: 'About',
   login: 'Login',
   logout: 'Logout',

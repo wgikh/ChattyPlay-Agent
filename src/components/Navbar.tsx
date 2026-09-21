@@ -15,7 +15,7 @@ import {
   AndroidOutlined,
   RobotOutlined,
   NodeIndexOutlined,
-  // NotificationOutlined
+  NotificationOutlined
 } from '@ant-design/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -210,7 +210,7 @@ const Navbar: React.FC = () => {
     { key: '/markmap', label: t('nav.aimarkmap'), icon: <NodeIndexOutlined /> },
     // 如果是移动端，不显示监工菜单项
     ...(isMobile ? [] : [{ key: '/worker', label: t('nav.worker'), icon: <RobotOutlined /> }]),
-    // { key: '/news', label: t('nav.news'), icon: <NotificationOutlined /> },
+    { key: '/news', label: t('nav.news'), icon: <NotificationOutlined /> },
     { key: '/about', label: t('nav.about'), icon: <UserOutlined /> }
   ]
 

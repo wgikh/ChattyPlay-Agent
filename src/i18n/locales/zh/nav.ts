@@ -9,6 +9,7 @@ const nav = {
   textToPhoto: '绘图',
   gold: '黄金',
   aimarkmap: '导图',
+  news: '资讯',
   about: '关于',
   login: '登录',
   logout: '退出',
