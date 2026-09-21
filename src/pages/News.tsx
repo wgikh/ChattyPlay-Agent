@@ -76,7 +76,7 @@ const Page = styled.div`
   --paper: #fffef9;
   min-height: calc(100vh - 64px);
   color: var(--ink);
-  background: #f4f3ed;
+  background: rgb(249, 250, 251);
   font-family: "Noto Sans SC", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
 `
 
@@ -85,7 +85,7 @@ const Toolbar = styled.div`
   top: 64px;
   z-index: 10;
   border-bottom: 1px solid rgba(23, 35, 31, 0.1);
-  background: rgba(255, 254, 249, 0.96);
+  background: rgba(249, 250, 251, 0.96);
 `
 
 const ToolbarInner = styled.div`

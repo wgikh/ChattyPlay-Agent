@@ -211,7 +211,7 @@
 
 - ### 关于我
 
-<img width="1470" height="792" alt="Image" src="https://github.com/user-attachments/assets/8e34e58f-ea63-47ce-9070-09f63fe6564d" />
+<img width="1468" height="792" alt="Image" src="https://github.com/user-attachments/assets/922dd508-1817-4a27-8017-830262cde8e8" />
 <img width="1470" height="792" alt="Image" src="https://github.com/user-attachments/assets/0e293ff8-dedd-47a8-a51f-22f0211e944e" />
 <img width="1470" height="793" alt="Image" src="https://github.com/user-attachments/assets/32c04cc5-4a05-4b8e-962b-fbedcf0af228" />
 
@@ -291,6 +291,11 @@
 <img width="1470" height="794" alt="Image" src="https://github.com/user-attachments/assets/d3a8e9c0-adc1-40f1-9de9-f79c14f483a4" />
 <img width="1470" height="795" alt="Image" src="https://github.com/user-attachments/assets/b17a1d6d-d8e8-48f6-96f6-a49968d4be71" />
 <img width="660" height="700" alt="Image" src="https://github.com/user-attachments/assets/41da09a3-8c84-434c-a001-fc81b5624217" />
+
+- ### 新闻资讯
+
+<img width="1470" height="791" alt="Image" src="https://github.com/user-attachments/assets/b4892e2c-eec5-4192-a83a-ed4666e5afa6" />
+<img width="491" height="718" alt="Image" src="https://github.com/user-attachments/assets/3f4707da-88cb-44d6-ae4e-7f40b48a7d55" />
 
 - ### ChatGPT页面
 
