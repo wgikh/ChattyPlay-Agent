@@ -28,10 +28,14 @@
 
 ## 📦 相关项目
 
-如果你更习惯在终端里工作，可以试试我的另一个项目：
+如果您觉得我这个项目还不错，下面这些也是我认真做的，可以一并看看：
 
 - **[ChattyPlay-Agent-Terminal](https://github.com/P1kaj1uu/ChattyPlay-Agent-Terminal)**
   **终端 AI 编程助手**，在 shell 里直接调用 AI 写代码、改 bug、解释代码、操作文件...
+- **[ChattyPlay-Paper-MCP](https://github.com/P1kaj1uu/ChattyPlay-Paper-MCP)**
+  **论文 MCP**，支持搜索Hugging Face的每日论文、获取论文详情和关联资源...
+- **[ChattyPlay-Paper-PPT-Skills](https://github.com/P1kaj1uu/p1kaj1uu-paper-pptx-skills)**
+  **PPT + 绘图 Skills**，面向所有主流AI agent的PPTX / 论文架构图生产技能，输入大纲、参考图或项目代码，输出可逐元素编辑的PowerPoint与可溯源的论文架构图...
 
 ## 📖 版本迭代
 
