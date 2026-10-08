@@ -85,14 +85,6 @@
 
 ## 🤝 优选伙伴 · 特别赞助
 
-- IPWO
-
-<img width="1500" height="397" alt="Image" src="https://github.com/user-attachments/assets/f01b399a-93a0-4313-aaee-97346b9a7058" />
-
-### IPWO住宅代理提供覆盖全球 195+ 国家和地区的高质量的IP池，适用于 AI Agent、浏览器自动化、多地区访问测试及全球市场调研，为开发者提供稳定、灵活的网络支持。
-
-0元试用，优惠折扣码：0103，访问IPWO入口：https://www.ipwo.net/?ref=githubP1kaj1uu
-
 - 魔珐星云
 
 <img width="1500" height="397" alt="Image" src="https://github.com/user-attachments/assets/987f8c4f-53fc-40ac-9717-37231b70e47d" />
