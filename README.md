@@ -332,6 +332,7 @@
 
 ## ⚡ 网站性能
 
+<img width="1395" height="693" alt="Image" src="https://github.com/user-attachments/assets/8b49676b-116c-4746-adb8-fc44461c07b8" />
 <img width="1470" height="793" alt="Image" src="https://github.com/user-attachments/assets/468c753d-5f3f-43ff-b3d0-e86a66064319" />
 <img width="1373" height="788" alt="Image" src="https://github.com/user-attachments/assets/b159956b-599a-439a-a05c-33cd25def60a" />
 <img width="1470" height="755" alt="Image" src="https://github.com/user-attachments/assets/746890e5-d67b-491f-af1f-957b0f832040" />
