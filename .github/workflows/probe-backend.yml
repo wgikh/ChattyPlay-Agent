@@ -1,0 +1,19 @@
+name: Probe Backend
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe Vercel backend
+        run: |
+          echo "=== /api/health ==="
+          curl -sS -i --max-time 30 "https://chattyplay-agent.vercel.app/api/health" || echo "HEALTH_FAILED"
+          echo ""
+          echo "=== / (root) ==="
+          curl -sS -o /dev/null -w "root_status=%{http_code}\n" --max-time 30 "https://chattyplay-agent.vercel.app/" || echo "ROOT_FAILED"
+          echo ""
+          echo "=== /api/bcomic/ (expect json or upstream status) ==="
+          curl -sS -o /dev/null -w "bcomic_status=%{http_code}\n" --max-time 30 "https://chattyplay-agent.vercel.app/api/bcomic/Comic/getComicClasses" || echo "BCOMIC_FAILED"
