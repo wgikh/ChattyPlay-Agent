@@ -20,6 +20,7 @@
     "worker:tail": "wrangler tail"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.6.1",
     "@emailjs/browser": "^4.4.1",
     "@hcaptcha/react-hcaptcha": "^2.0.2",
     "@hono/node-server": "^1.19.9",
@@ -35,6 +36,8 @@
     "axios": "^1.6.0",
     "better-sqlite3": "^12.6.2",
     "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.23",
+    "dompurify": "^3.4.16",
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.6",
     "fflate": "^0.8.2",

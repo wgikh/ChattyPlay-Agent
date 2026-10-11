@@ -25,6 +25,7 @@ import {
 } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
+import { apiUrl } from '../utils/apiBase'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -139,7 +140,7 @@ const CartoonDetail: React.FC = () => {
   const fetchTopicDetail = async (topicId: number) => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/bcomic/ComicDetail?comicId=${topicId}`)
+      const response = await fetch(apiUrl(`/api/bcomic/ComicDetail?comicId=${topicId}`))
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
 

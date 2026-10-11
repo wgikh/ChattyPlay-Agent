@@ -4,6 +4,7 @@ import { CloseOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import axios from 'axios'
+import { apiUrl } from '../utils/apiBase'
 
 const MusicContainer = styled.div`
   min-height: calc(100vh - 120px);
@@ -454,7 +455,7 @@ const Music: React.FC = () => {
 
     try {
       const response = await axios.get(
-        `/api/netease/search?keywords=${encodeURIComponent(query)}`
+        apiUrl(`/api/netease/search?keywords=${encodeURIComponent(query)}`)
       )
 
       if (response.data?.result?.songs) {
@@ -475,7 +476,7 @@ const Music: React.FC = () => {
       for (const level of levels) {
         try {
           const response = await axios.get(
-            `/api/netease/song/url/v1?id=${musicId}&level=${level}`
+            apiUrl(`/api/netease/song/url/v1?id=${musicId}&level=${level}`)
           )
 
           if (response.data?.data?.[0]?.url) {
@@ -498,7 +499,7 @@ const Music: React.FC = () => {
   // 获取热门评论
   const fetchHotComments = async (musicId: number) => {
     try {
-      const response = await axios.get(`/api/netease/comment/hot?type=0&id=${musicId}`)
+      const response = await axios.get(apiUrl(`/api/netease/comment/hot?type=0&id=${musicId}`))
       if (response.data?.hotComments) {
         return response.data.hotComments
       }
@@ -542,7 +543,7 @@ const Music: React.FC = () => {
   // 播放MV
   const playMV = async (mvid: number) => {
     try {
-      const response = await axios.get(`/api/netease/mv/url?id=${mvid}`)
+      const response = await axios.get(apiUrl(`/api/netease/mv/url?id=${mvid}`))
       if (response.data?.data?.url) {
         setMvUrl(response.data.data.url)
         setShowMV(true)

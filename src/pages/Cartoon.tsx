@@ -20,6 +20,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
+import { apiUrl } from '../utils/apiBase'
 
 const { Title, Text, Paragraph } = Typography
 const { Search } = Input
@@ -229,7 +230,7 @@ const Cartoon: React.FC = () => {
   const fetchRankTypes = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/bcomic/ListRank')
+      const response = await fetch(apiUrl('/api/bcomic/ListRank'))
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
 
@@ -255,7 +256,7 @@ const Cartoon: React.FC = () => {
     try {
       setLoading(true)
       const response = await fetch(
-        `/api/bcomic/GetRankInfo?id=${rankId}&offset=0&subId=0`
+        apiUrl(`/api/bcomic/GetRankInfo?id=${rankId}&offset=0&subId=0`)
       )
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
@@ -301,7 +302,7 @@ const Cartoon: React.FC = () => {
     try {
       setLoading(true)
       setIsSearching(true)
-      const response = await fetch(`/api/bcomic/Search?styleId=-1&areaId=-1&isFinish=-1&order=-1&pageNum=1&pageSize=20&isFree=-1&keyWord=${encodeURIComponent(keyword)}`)
+      const response = await fetch(apiUrl(`/api/bcomic/Search?styleId=-1&areaId=-1&isFinish=-1&order=-1&pageNum=1&pageSize=20&isFree=-1&keyWord=${encodeURIComponent(keyword)}`))
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
 

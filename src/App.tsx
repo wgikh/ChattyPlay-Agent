@@ -244,11 +244,13 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
+  // 部署在子路径（如 GitHub Pages 的 /<repo>/）时，路由 basename 需要与 Vite base 保持一致
+  const routerBasename = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '') || '/'
 
   return (
     <ConfigProvider locale={zhCN}>
       <GoogleOAuthProvider clientId={googleClientId}>
-        <Router>
+        <Router basename={routerBasename}>
           <VersionUpdateModal />
           <AppContent />
         </Router>

@@ -125,7 +125,7 @@ const HeartBeat: React.FC<HeartBeatProps> = ({ onComplete }) => {
     // OBJ加载器
     const loader = new OBJLoader()
     loader.load(
-      '/model/heartBeat.obj',
+      `${import.meta.env.BASE_URL}model/heartBeat.obj`,
       (obj) => {
         console.log('模型加载成功')
         heart = (obj as any).children[0]

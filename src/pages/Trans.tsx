@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import MD5 from 'crypto-js/md5'
+import { apiUrl } from '../utils/apiBase'
 
 const { TextArea } = Input
 const { Option } = Select
@@ -106,7 +107,7 @@ const Trans: React.FC = () => {
 
       // 调用百度翻译API
       const response = await fetch(
-        (`/api/translate?q=${encodeURIComponent(sourceText)}&from=${sourceLang}&to=${targetLang}&appid=${BAIDU_APP_ID}&salt=${salt}&sign=${sign}`)
+        (apiUrl(`/api/translate?q=${encodeURIComponent(sourceText)}&from=${sourceLang}&to=${targetLang}&appid=${BAIDU_APP_ID}&salt=${salt}&sign=${sign}`))
       )
 
       const data = await response.json()

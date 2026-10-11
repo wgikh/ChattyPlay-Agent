@@ -1,0 +1,127 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+# 允许 GITHUB_TOKEN 部署到 Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只保留一次 Pages 部署
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build static site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      # 计算 GitHub Pages 的子路径：
+      #   - 用户/组织主页仓库 (<user>.github.io) -> "/"
+      #   - 普通仓库 -> "/<repo-name>/"
+      # 也可以在本仓库 Settings -> Variables 里设置 VITE_BASE_PATH 覆盖
+      - name: Compute base path
+        id: base
+        run: |
+          if [[ "${{ github.event.repository.name }}" == *.github.io ]]; then
+            BASE="/"
+          else
+            BASE="/${{ github.event.repository.name }}/"
+          fi
+          echo "value=${BASE}" >> "$GITHUB_OUTPUT"
+          echo "Vite base path = ${BASE}"
+
+      # 可选：把仓库 Variables / Secrets 注入构建环境变量
+      # （.env.production.local 的优先级高于仓库里提交的 .env.production）
+      - name: Write build environment
+        env:
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_OPENAI_BASE_URL: ${{ vars.VITE_OPENAI_BASE_URL }}
+          VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+          VITE_GITHUB_CLIENT_ID: ${{ vars.VITE_GITHUB_CLIENT_ID }}
+          VITE_TURNSTILE_SITE_KEY: ${{ vars.VITE_TURNSTILE_SITE_KEY }}
+          VITE_HCAPTCHA_SITE_KEY: ${{ vars.VITE_HCAPTCHA_SITE_KEY }}
+          VITE_ANALYTICS_REPORT_URL: ${{ vars.VITE_ANALYTICS_REPORT_URL }}
+          VITE_GOLD_API_BASE_URL: ${{ vars.VITE_GOLD_API_BASE_URL }}
+          VITE_NEWS_API_BASE_URL: ${{ vars.VITE_NEWS_API_BASE_URL }}
+          VITE_AGENT_API_URL: ${{ vars.VITE_AGENT_API_URL }}
+          VITE_PAY_URL: ${{ vars.VITE_PAY_URL }}
+          VITE_EMAILJS_PUBLIC_KEY: ${{ vars.VITE_EMAILJS_PUBLIC_KEY }}
+          VITE_EMAILJS_SERVICE_ID: ${{ vars.VITE_EMAILJS_SERVICE_ID }}
+          VITE_EMAILJS_TEMPLATE_ID: ${{ vars.VITE_EMAILJS_TEMPLATE_ID }}
+        run: |
+          : > .env.production.local
+          for name in \
+            VITE_API_BASE_URL \
+            VITE_OPENAI_BASE_URL \
+            VITE_OPENAI_API_KEY \
+            VITE_GOOGLE_CLIENT_ID \
+            VITE_GITHUB_CLIENT_ID \
+            VITE_TURNSTILE_SITE_KEY \
+            VITE_HCAPTCHA_SITE_KEY \
+            VITE_ANALYTICS_REPORT_URL \
+            VITE_GOLD_API_BASE_URL \
+            VITE_NEWS_API_BASE_URL \
+            VITE_AGENT_API_URL \
+            VITE_PAY_URL \
+            VITE_EMAILJS_PUBLIC_KEY \
+            VITE_EMAILJS_SERVICE_ID \
+            VITE_EMAILJS_TEMPLATE_ID ; do
+            value="${!name}"
+            if [ -n "${value}" ]; then
+              printf '%s=%s\n' "${name}" "${value}" >> .env.production.local
+            fi
+          done
+          echo "----- .env.production.local -----"
+          cat .env.production.local
+
+      - name: Build
+        env:
+          VITE_BASE_PATH: ${{ steps.base.outputs.value }}
+        run: npm run build
+
+      # GitHub Pages 不支持 SPA 的 history 路由回退，
+      # 用 index.html 复制一份 404.html 来兜底深链接（刷新 /xxx 不再 404）。
+      - name: Add SPA fallback (404.html)
+        run: |
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+          ls -la dist | head -n 30
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -46,6 +46,8 @@ function copyHtaccessPlugin() {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // 部署到 GitHub Pages 等子路径时，通过 VITE_BASE_PATH 注入（例如 /ChattyPlay-Agent/）
+  base: process.env.VITE_BASE_PATH || '/',
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version)
   },

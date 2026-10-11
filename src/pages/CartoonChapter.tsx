@@ -18,6 +18,7 @@ import {
 } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
+import { apiUrl } from '../utils/apiBase'
 
 const { Title, Paragraph } = Typography
 
@@ -191,7 +192,7 @@ const CartoonChapter: React.FC = () => {
       setComicInfo(null)
       setPreviousComicInfo(null)
       setNextComicInfo(null)
-      const response = await fetch(`/api/bcomic/GetImageIndex?epId=${id}`)
+      const response = await fetch(apiUrl(`/api/bcomic/GetImageIndex?epId=${id}`))
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
       if (data.code !== 0 || !data.data?.images?.length) throw new Error(data.msg || 'No images')
@@ -199,7 +200,7 @@ const CartoonChapter: React.FC = () => {
       const imageUrls = data.data.images.map((image: { path: string }) => `${data.data.host}${image.path}@1000w.webp`)
       const chunks = Array.from({ length: Math.ceil(imageUrls.length / 10) }, (_, index) => imageUrls.slice(index * 10, index * 10 + 10))
       const tokenResults = await Promise.all(chunks.map(async urls => {
-        const tokenResponse = await fetch(`/api/bcomic/ImageToken?urls=${encodeURIComponent(JSON.stringify(urls))}`)
+        const tokenResponse = await fetch(apiUrl(`/api/bcomic/ImageToken?urls=${encodeURIComponent(JSON.stringify(urls))}`))
         if (!tokenResponse.ok) throw new Error(`HTTP ${tokenResponse.status}`)
         const tokenData = await tokenResponse.json()
         if (tokenData.code !== 0 || !tokenData.data) throw new Error(tokenData.msg || 'No image tokens')
@@ -208,7 +209,7 @@ const CartoonChapter: React.FC = () => {
 
       let title = `${t('cartoonDetail.episode')} ${id}`
       if (parentComicId) {
-        const detailResponse = await fetch(`/api/bcomic/ComicDetail?comicId=${parentComicId}`)
+        const detailResponse = await fetch(apiUrl(`/api/bcomic/ComicDetail?comicId=${parentComicId}`))
         if (!detailResponse.ok) throw new Error(`HTTP ${detailResponse.status}`)
         const detailData = await detailResponse.json()
         const episodes: EpisodeInfo[] = [...(detailData.data?.ep_list || [])]

@@ -7,6 +7,7 @@ import * as echarts from 'echarts'
 import { formatPrice, formatChange, formatPercent, getPriceClass } from '@/utils/price'
 import '@/assets/css/gold.scss'
 import emailjs from '@emailjs/browser'
+import { apiUrl } from '../utils/apiBase'
 // @ts-ignore
 import { emailConfig } from '../../email.config'
 
@@ -58,8 +59,7 @@ const Gold: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const isFirstLoadRef = useRef(true)
 
-  const API_BASE = import.meta.env.VITE_GOLD_API_BASE_URL || ''
-
+  
   const updateTime = (): void => {
     const now = new Date()
     setCurrentTime(now.toLocaleString('zh-CN', {
@@ -81,7 +81,7 @@ const Gold: React.FC = () => {
   // 获取价格数据
   const fetchPriceData = async (): Promise<void> => {
     try {
-      const response = await axios.get(`${API_BASE}/api/price/all`)
+      const response = await axios.get(apiUrl('/api/price/all'))
       setPriceData({
         international: response.data.international,
         domestic: response.data.domestic,
@@ -101,7 +101,7 @@ const Gold: React.FC = () => {
   // 获取K线数据
   const fetchKlineData = async (days: number = 30): Promise<void> => {
     try {
-      const response = await axios.get(`${API_BASE}/api/chart/kline?days=${days}`)
+      const response = await axios.get(apiUrl(`/api/chart/kline?days=${days}`))
       setKlineData(response.data.rawData)
       if (chartInstanceRef.current && response.data.chartOption) {
         chartInstanceRef.current.setOption(response.data.chartOption)

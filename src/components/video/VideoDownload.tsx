@@ -3,6 +3,7 @@ import { Input, Button, message, Typography, Card, Spin, Tag, Space, Divider, Pr
 import { LinkOutlined, DownloadOutlined, LoadingOutlined, PlayCircleOutlined, ReloadOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { apiUrl } from '../../utils/apiBase'
 
 const { Title, Text, Paragraph } = Typography
 const { TextArea } = Input
@@ -346,7 +347,7 @@ const VideoDownload: React.FC = () => {
     setVideoInfo(null)
 
     try {
-      const response = await fetch('/api/resolve', {
+      const response = await fetch(apiUrl('/api/resolve'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -420,7 +421,7 @@ const VideoDownload: React.FC = () => {
 
       try {
         // 使用fetch发送POST请求到bilibili-download API
-        const response = await fetch('/api/bilibili-download', {
+        const response = await fetch(apiUrl('/api/bilibili-download'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -549,7 +550,7 @@ const VideoDownload: React.FC = () => {
         const filename = `${videoInfo?.title || 'video'}.mp4`
 
         // 使用fetch发送POST请求到proxy-download API
-        const response = await fetch('/api/proxy-download', {
+        const response = await fetch(apiUrl('/api/proxy-download'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

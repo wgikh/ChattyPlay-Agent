@@ -18,6 +18,7 @@ import HeartBeat from '../components/HeartBeat'
 import { logoImage } from '@/utils/images'
 import { setToken } from '@/utils/token'
 import { isMobileDevice } from '@/utils/isMobile'
+import { apiUrl } from '../utils/apiBase'
 
 // Cloudflare Turnstile 配置
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || ''
@@ -382,7 +383,7 @@ const Login: React.FC = () => {
     setLoading(true)
     ;(async () => {
       try {
-        const response = await fetch('/api/auth/github', {
+        const response = await fetch(apiUrl('/api/auth/github'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -528,7 +529,7 @@ const Login: React.FC = () => {
 
     setLoading(true)
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -599,7 +600,7 @@ const Login: React.FC = () => {
 
     setLoading(true)
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(apiUrl('/api/auth/register'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -660,7 +661,7 @@ const Login: React.FC = () => {
 
       // 后端用 access_token 验证身份并签发本站 JWT
       try {
-        const response = await fetch('/api/auth/google', {
+        const response = await fetch(apiUrl('/api/auth/google'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

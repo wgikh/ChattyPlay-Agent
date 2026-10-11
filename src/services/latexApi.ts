@@ -1,3 +1,4 @@
+import { apiUrl } from '../utils/apiBase'
 /**
  * LaTeX 编译 API 服务
  * 通过本地代理调用第三方在线 API 编译 LaTeX 代码，返回 PDF Blob
@@ -32,7 +33,7 @@ export async function compileLatex({ code, compiler = 'xelatex', timeout = 60000
     const timeoutId = setTimeout(() => controller.abort(), timeout)
 
     // 使用本地代理 API
-    const response = await fetch('/api/latex/compile', {
+    const response = await fetch(apiUrl('/api/latex/compile'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -98,7 +99,7 @@ export async function compileLatex({ code, compiler = 'xelatex', timeout = 60000
  */
 export async function checkApiHealth(): Promise<boolean> {
   try {
-    const response = await fetch('/api/latex/health', {
+    const response = await fetch(apiUrl('/api/latex/health'), {
       method: 'GET',
       signal: AbortSignal.timeout(5000),
     })
