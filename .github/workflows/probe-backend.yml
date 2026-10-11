@@ -7,16 +7,16 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe Vercel backend
+      - name: Probe
         run: |
-          echo "=== /api/health ==="
-          curl -sS -i --max-time 30 "https://chattyplay-agent.vercel.app/api/health" || echo "HEALTH_FAILED"
-          echo ""
-          echo "=== /api/bcomic/ListRank ==="
-          curl -sS --max-time 30 "https://chattyplay-agent.vercel.app/api/bcomic/ListRank" | head -c 500 || echo "LISTRANK_FAILED"
-          echo ""
-          echo "=== /api/bcomic/ComicDetail?comicId=1 ==="
-          curl -sS -o /dev/null -w "detail_status=%{http_code}\n" --max-time 30 "https://chattyplay-agent.vercel.app/api/bcomic/ComicDetail?comicId=1" || echo "DETAIL_FAILED"
-          echo ""
-          echo "=== /api/translate/ (baidu proxy) ==="
-          curl -sS -o /dev/null -w "translate_status=%{http_code}\n" --max-time 30 "https://chattyplay-agent.vercel.app/api/translate/vip/translate" || echo "TRANSLATE_FAILED"
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+          echo "=== netstart bare ==="
+          curl -sS -o /dev/null -w "bare=%{http_code}\n" --max-time 30 "https://apis.netstart.cn/bcomic/ListRank" || echo "BARE_FAILED"
+          echo "=== netstart with UA ==="
+          curl -sS -o /dev/null -w "ua=%{http_code}\n" -A "$UA" --max-time 30 "https://apis.netstart.cn/bcomic/ListRank" || echo "UA_FAILED"
+          echo "=== netstart with UA + referer ==="
+          curl -sS -o /dev/null -w "uaref=%{http_code}\n" -A "$UA" -e "https://apis.netstart.cn/" --max-time 30 "https://apis.netstart.cn/bcomic/ListRank" || echo "UAREF_FAILED"
+          echo "=== vercel bcomic ==="
+          curl -sS -o /dev/null -w "vercel=%{http_code}\n" --max-time 30 "https://chattyplay-agent.vercel.app/api/bcomic/ListRank" || echo "VERCEL_FAILED"
+          echo "=== vercel health ==="
+          curl -sS --max-time 30 "https://chattyplay-agent.vercel.app/api/health" || echo "HEALTH_FAILED"
