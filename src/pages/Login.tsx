@@ -705,35 +705,46 @@ const Login: React.FC = () => {
     window.location.href = githubAuthUrl
   }
 
-  // 游客登录：不依赖 Redis，后端直接签发临时游客 JWT
+  // 游客登录：优先调用后端签发临时 JWT；
+  // 若后端不可达（例如 *.vercel.app 被网络拦截），自动降级为纯本地游客会话，保证能进入。
   const handleGuestLogin = async () => {
+    setLoading(true)
+
+    let backendOk = false
     try {
-      setLoading(true)
       const response = await fetch(apiUrl('/api/auth/guest'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       })
       const data = await response.json()
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || '游客登录失败')
+      if (response.ok && data?.success) {
+        applyOAuthSession(data)
+        backendOk = true
       }
+    } catch (error) {
+      console.warn('游客接口不可达，使用本地游客会话:', error)
+    }
 
-      applyOAuthSession(data)
-      localStorage.setItem('isGuest', 'true')
-      message.success('已以游客身份进入')
+    // 降级方案：本地生成临时游客身份（不依赖网络、不写 Redis，仅保存在本机浏览器）
+    if (!backendOk) {
+      const guestNumber = Math.floor(100000 + Math.random() * 900000)
+      const localToken = `guest-local.${Date.now().toString(36)}.${Math.random().toString(36).slice(2, 12)}`
+      setToken(localToken)
+      localStorage.setItem('isLoggedIn', 'true')
+      localStorage.setItem('username', `游客${guestNumber}`)
+      localStorage.setItem('userId', String(-guestNumber))
+      localStorage.setItem('avatar', '')
+    }
 
-      if (!isMobileDevice()) {
-        setShowHeartBeat(true)
-      } else {
-        setShowHeartBeat(false)
-        navigate('/home')
-      }
-    } catch (error: any) {
-      console.error('Guest login error:', error)
-      message.error(error.message || '游客登录失败')
-    } finally {
-      setLoading(false)
+    localStorage.setItem('isGuest', 'true')
+    message.success('已以游客身份进入')
+    setLoading(false)
+
+    if (!isMobileDevice()) {
+      setShowHeartBeat(true)
+    } else {
+      setShowHeartBeat(false)
+      navigate('/home')
     }
   }
 

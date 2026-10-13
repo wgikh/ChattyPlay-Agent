@@ -231,6 +231,15 @@ const HeartBeat: React.FC<HeartBeatProps> = ({ onComplete }) => {
       renderer.render(scene, camera)
     }
 
+    // 兜底：若模型加载失败或超时，最多 6 秒后也要进入下一步，避免停留在黑屏
+    const fallbackTimer = setTimeout(() => {
+      if (!timerRef.current) {
+        console.log('模型加载超时，兜底进入下一步')
+        renderer.setAnimationLoop(null)
+        onComplete()
+      }
+    }, 6000)
+
     // 窗口大小调整
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight
@@ -245,6 +254,7 @@ const HeartBeat: React.FC<HeartBeatProps> = ({ onComplete }) => {
       if (timerRef.current) {
         clearTimeout(timerRef.current)
       }
+      clearTimeout(fallbackTimer)
       window.removeEventListener('resize', handleResize)
       renderer.setAnimationLoop(null)
       if (containerRef.current && renderer.domElement.parentNode === containerRef.current) {
