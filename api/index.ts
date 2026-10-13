@@ -535,15 +535,15 @@ app.post('/api/auth/github', async (c) => {
       return c.json({ success: false, message: '缺少 code' }, 400)
     }
 
-    // client_id 复用现有的 VITE_GITHUB_CLIENT_ID（Vercel 平台环境变量中配置）
+    // client_id 优先读取 GITHUB_CLIENT_ID；兼容旧配置 VITE_GITHUB_CLIENT_ID
     // client_secret 从 GITHUB_CLIENT_SECRET 读取（可选，仅部署到 Vercel 平台时配置；未配置则 GitHub JWT 登录不可用）
-    const clientId = process.env.VITE_GITHUB_CLIENT_ID
+    const clientId = process.env.GITHUB_CLIENT_ID || process.env.VITE_GITHUB_CLIENT_ID
     const clientSecret = process.env.GITHUB_CLIENT_SECRET
 
     if (!clientId || !clientSecret) {
       return c.json({
         success: false,
-        message: 'GitHub OAuth 未配置，请在 Vercel 环境变量中设置 VITE_GITHUB_CLIENT_ID 和 GITHUB_CLIENT_SECRET'
+        message: 'GitHub OAuth 未配置，请在 Vercel 环境变量中设置 GITHUB_CLIENT_ID 和 GITHUB_CLIENT_SECRET'
       }, 500)
     }
 
@@ -686,7 +686,11 @@ app.get('/api/auth/me', async (c) => {
 })
 
 // 简单的健康检查
-app.get('/api/health', (c) => c.json({ status: 'ok' }))
+app.get('/api/health', (c) => c.json({
+  status: 'ok',
+  redisConfigured: Boolean(REDIS_REST_URL && REDIS_REST_TOKEN),
+  githubOAuthConfigured: Boolean((process.env.GITHUB_CLIENT_ID || process.env.VITE_GITHUB_CLIENT_ID) && process.env.GITHUB_CLIENT_SECRET),
+}))
 
 // Vercel Cron 定期唤醒常驻的 Hugging Face 闲鱼后端
 app.get('/api/goofish-health', async (c) => {

@@ -697,7 +697,8 @@ const Login: React.FC = () => {
     }
 
     // 构建 GitHub OAuth 授权 URL，回调回登录页（/），由登录页用 code 换取本站 JWT
-    const redirectUri = window.location.origin + '/'
+    // GitHub Pages 部署在子路径下时，回调必须包含 base path（如 /ChattyPlay-Agent/）
+    const redirectUri = window.location.origin + import.meta.env.BASE_URL
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user:email`
 
     // 跳转到 GitHub 授权页面

@@ -49,7 +49,7 @@ gh repo create <你的用户名>/ChattyPlay-Agent --public --source=. --remote=o
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | 用户/会话存储 | 登录注册功能必需 |
 | `BCOMIC_API_BASE_URL` | 漫画数据源（默认 `https://apis.netstart.cn/bcomic`） | 漫画功能必需 |
 | `VIDEO_PARSE_API_BASE_URL` | 视频解析源 | 视频解析功能必需 |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth 登录 | 用到 GitHub 登录时必填 |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth 登录（后端） | 用到 GitHub 登录时必填 |
 | `GOOFISH_BACKEND_URL` / `CRON_SECRET` | 闲鱼助手定时健康检查 | 可选 |
 
 ---
