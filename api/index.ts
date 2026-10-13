@@ -190,7 +190,14 @@ function verifyPassword(password: string, hashedPassword: string): boolean {
 
 // ============ JWT Token 函数 ============
 
-function generateToken(payload: { userId: number; username: string }): string {
+interface TokenPayload {
+  userId: number
+  username: string
+  isGuest?: boolean
+  exp?: number
+}
+
+function generateToken(payload: TokenPayload): string {
   const tokenPayload = {
     ...payload,
     exp: Date.now() + TOKEN_EXPIRY
@@ -209,7 +216,7 @@ function generateToken(payload: { userId: number; username: string }): string {
   return `${encodedHeader}.${encodedPayload}.${encodedSignature}`
 }
 
-function verifyToken(token: string): { userId: number; username: string } | null {
+function verifyToken(token: string): TokenPayload | null {
   try {
     const [encodedHeader, encodedPayload, encodedSignature] = token.split('.')
 
@@ -224,7 +231,7 @@ function verifyToken(token: string): { userId: number; username: string } | null
       return null
     }
 
-    const payload = JSON.parse(base64UrlDecode(encodedPayload)) as { userId: number; username: string; exp?: number }
+    const payload = JSON.parse(base64UrlDecode(encodedPayload)) as TokenPayload
 
     if (payload.exp && payload.exp < Date.now()) {
       return null
@@ -430,6 +437,38 @@ app.post('/api/auth/login', async (c) => {
       message: '服务器错误'
     }, 500)
   }
+})
+
+/**
+ * 游客登录
+ * POST /api/auth/guest
+ * 不依赖 Redis，签发临时游客 JWT
+ */
+app.post('/api/auth/guest', (c) => {
+  const guestNumber = Math.floor(100000 + Math.random() * 900000)
+  const username = `游客${guestNumber}`
+  const guestId = -guestNumber
+  const createdAt = new Date().toISOString()
+
+  const token = generateToken({
+    userId: guestId,
+    username,
+    isGuest: true
+  })
+
+  return c.json({
+    success: true,
+    message: '游客登录成功',
+    token,
+    user: {
+      id: guestId,
+      username,
+      email: '',
+      avatar: '',
+      created_at: createdAt,
+      isGuest: true
+    }
+  })
 })
 
 /**
@@ -652,6 +691,20 @@ app.get('/api/auth/me', async (c) => {
         success: false,
         message: '无效的认证令牌'
       }, 401)
+    }
+
+    if (payload.isGuest) {
+      return c.json({
+        success: true,
+        user: {
+          id: payload.userId,
+          username: payload.username,
+          email: '',
+          avatar: '',
+          created_at: new Date().toISOString(),
+          isGuest: true
+        }
+      })
     }
 
     // 查找用户

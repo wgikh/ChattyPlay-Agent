@@ -210,17 +210,17 @@ const OAuthButtonContainer = styled.div`
   margin-bottom: 16px;
 `
 
-const OAuthButton = styled.button<{ variant: 'google' | 'github' }>`
+const OAuthButton = styled.button<{ variant: 'google' | 'github' | 'guest' }>`
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   height: 44px;
-  border: 1px solid ${props => props.variant === 'google' ? '#dadce0' : '#d1d5db'};
+  border: 1px solid ${props => props.variant === 'guest' ? '#667eea' : props.variant === 'google' ? '#dadce0' : '#d1d5db'};
   border-radius: 8px;
-  background: ${props => props.variant === 'google' ? '#fff' : '#24292e'};
-  color: ${props => props.variant === 'github' ? '#fff' : '#3c4043'};
+  background: ${props => props.variant === 'guest' ? '#f0f2ff' : props.variant === 'google' ? '#fff' : '#24292e'};
+  color: ${props => props.variant === 'github' ? '#fff' : props.variant === 'guest' ? '#4c51bf' : '#3c4043'};
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -229,8 +229,8 @@ const OAuthButton = styled.button<{ variant: 'google' | 'github' }>`
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px ${props => props.variant === 'google' ? 'rgba(60, 64, 67, 0.3)' : 'rgba(36, 41, 46, 0.3)'};
-    border-color: ${props => props.variant === 'google' ? '#d3d3d3' : '#1a202c'};
+    box-shadow: 0 4px 12px ${props => props.variant === 'guest' ? 'rgba(102, 126, 234, 0.3)' : props.variant === 'google' ? 'rgba(60, 64, 67, 0.3)' : 'rgba(36, 41, 46, 0.3)'};
+    border-color: ${props => props.variant === 'guest' ? '#5568d3' : props.variant === 'google' ? '#d3d3d3' : '#1a202c'};
   }
 
   &:active {
@@ -705,6 +705,38 @@ const Login: React.FC = () => {
     window.location.href = githubAuthUrl
   }
 
+  // 游客登录：不依赖 Redis，后端直接签发临时游客 JWT
+  const handleGuestLogin = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch(apiUrl('/api/auth/guest'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || '游客登录失败')
+      }
+
+      applyOAuthSession(data)
+      localStorage.setItem('isGuest', 'true')
+      message.success('已以游客身份进入')
+
+      if (!isMobileDevice()) {
+        setShowHeartBeat(true)
+      } else {
+        setShowHeartBeat(false)
+        navigate('/home')
+      }
+    } catch (error: any) {
+      console.error('Guest login error:', error)
+      message.error(error.message || '游客登录失败')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <>
       {showHeartBeat ? (
@@ -1003,6 +1035,11 @@ const Login: React.FC = () => {
                 GitHub
               </OAuthButton>
             </OAuthButtonContainer>
+
+            <OAuthButton variant="guest" onClick={handleGuestLogin} style={{ width: '100%' }} disabled={loading}>
+              <UserOutlined />
+              游客进入（临时）
+            </OAuthButton>
           </LoginBox>
         </LoginContainer>
       )}
