@@ -1,0 +1,19 @@
+name: Probe Guest API
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe /api/auth/guest
+        run: |
+          echo '--- health ---'
+          curl -sS -m 30 -o health.txt -w 'health_http=%{http_code}\n' https://chattyplay-agent.vercel.app/api/health || true
+          cat health.txt || true
+          echo
+          echo '--- guest ---'
+          code=$(curl -sS -m 30 -o guest.txt -w '%{http_code}' -X POST -H 'Content-Type: application/json' https://chattyplay-agent.vercel.app/api/auth/guest || echo '000')
+          echo "guest_http=$code"
+          cat guest.txt || true
